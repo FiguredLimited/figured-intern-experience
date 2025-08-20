@@ -115,16 +115,23 @@ const generateCommentary = async () => {
         aiLoading.value = true;
         aiError.value = null;
 
-        // Create a context-aware prompt with actual financial data
-        const metrics = keyMetrics.value;
+        // Pass the entire data as context
         const enhancedPrompt = `
-      Based on the following financial data for ${reportData.value.company.name}:
-      - Gross Profit: $${formatCurrency(metrics?.grossProfit || 0)}
-      - Operating Surplus: $${formatCurrency(metrics?.operatingSurplus || 0)}
-      - Net Profit: $${formatCurrency(metrics?.netProfit || 0)}
-      
-      ${aiPrompt.value}
-    `;
+You are a financial analyst AI assistant. Analyze the following complete financial data and answer the user's question.
+
+COMPANY INFORMATION:
+Company: ${reportData.value.company.name}
+Report Type: ${reportData.value.company.report_type}
+Period: ${reportData.value.company.period}
+Basis: ${reportData.value.company.basis}
+
+COMPLETE FINANCIAL DATA:
+${JSON.stringify(reportData.value, null, 2)}
+
+USER QUESTION: ${aiPrompt.value}
+
+Please provide a detailed analysis based on the complete financial data above.
+        `;
 
         const response = await fetch('/api/generate-commentary', {
             method: 'POST',
@@ -134,6 +141,7 @@ const generateCommentary = async () => {
             },
             body: JSON.stringify({
                 prompt: enhancedPrompt,
+                financialData: reportData.value, // Optionally send as structured data
             }),
         });
 
@@ -200,11 +208,16 @@ onMounted(() => {
             <div v-else-if="reportData" class="space-y-6">
                 <!-- Report Header -->
                 <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                    <div>
-                        <h1 class="mb-2 text-3xl font-bold text-gray-900">{{ reportData.company.name }}</h1>
-                        <h2 class="mb-1 text-xl text-gray-700">{{ reportData.company.report_type }}</h2>
-                        <p class="text-sm text-gray-600">{{ reportData.company.period }}</p>
-                        <p class="text-sm text-gray-500">{{ reportData.company.basis }} | Actuals to {{ reportData.company.actuals_to }}</p>
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h1 class="mb-2 text-3xl font-bold text-gray-900">{{ reportData.company.name }}</h1>
+                            <h2 class="mb-1 text-xl text-gray-700">{{ reportData.company.report_type }}</h2>
+                            <p class="text-sm text-gray-600">{{ reportData.company.period }}</p>
+                            <p class="text-sm text-gray-500">{{ reportData.company.basis }} | Actuals to {{ reportData.company.actuals_to }}</p>
+                        </div>
+                        <div class="text-right">
+                            <img src="/api/placeholder/120/40" alt="Logo" class="h-10" />
+                        </div>
                     </div>
                 </div>
 
