@@ -13,6 +13,10 @@ Route::get('/challenge', function () {
     return Inertia::render('Challenge');
 })->name('challenge');
 
+Route::get('/easy-mode', function () {
+    return Inertia::render('EasyMode');
+})->name('easy-mode');
+
 Route::get('/api/financial-report', [FinancialReportController::class, 'getFinancialReport'])
     ->name('api.financial-report');
 

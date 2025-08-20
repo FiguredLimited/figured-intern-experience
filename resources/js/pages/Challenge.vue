@@ -1,36 +1,3 @@
-<!--
-🌾 Figured Intern Challenge - Interactive Profit & Loss Report
-
-This component creates a comprehensive, interactive financial report for Windy Farm
-that transforms raw financial data into a professional P&L statement with advanced features:
-
-Key Features:
-- 📊 Professional hierarchical financial reporting with collapsible sections
-- 💰 Key metrics dashboard (Gross Profit, Operating Surplus, Net Profit)
-- 📈 Monthly trend analysis with percentage changes and visual indicators
-- 🤖 AI-powered financial commentary using Prism/OpenAI integration
-- ⚡ Keyboard shortcuts for power users (Alt+A, Alt+E, Alt+X, Alt+C, Esc)
-- 📤 Export functionality (CSV, JSON) for data integration
-- 🎨 Professional styling with Tailwind CSS
-- 📱 Responsive design for desktop and mobile
-
-Technical Implementation:
-- Vue.js 3 Composition API with TypeScript
-- Reactive data management and computed properties
-- RESTful API integration for financial data
-- Error handling and loading states
-- Professional accounting report formatting
-- Modern web accessibility standards
-
-Business Value:
-- Helps farmers understand enterprise profitability
-- Provides accountants with client-ready reports
-- Supports data-driven agricultural decision making
-- Integrates with existing financial workflows
-
-Author: Figured Intern Challenge Submission
--->
-
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
@@ -355,6 +322,14 @@ onUnmounted(() => {
                     </Link>
 
                     <div class="flex items-center space-x-3">
+                        <Link
+                            href="/easy-mode"
+                            class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
+                            title="Switch to Easy Mode"
+                        >
+                            📊 Easy Mode
+                        </Link>
+
                         <button
                             @click="showAICommentary = !showAICommentary"
                             class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
