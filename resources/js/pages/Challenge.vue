@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { Head, Link } from "@inertiajs/vue3";
+import { ref, onMounted } from "vue";
 
 // Reactive data
 const reportData = ref<any>(null);
@@ -8,62 +8,65 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 
 // AI Commentary state
-const aiPrompt = ref('');
-const aiResponse = ref('');
+const aiPrompt = ref("");
+const aiResponse = ref("");
 const aiLoading = ref(false);
 const aiError = ref<string | null>(null);
 
 // Fetch financial report data
 const fetchFinancialData = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('/api/financial-report');
-    if (!response.ok) {
-      throw new Error('Failed to fetch financial data');
-    }
-    const data = await response.json();
-    reportData.value = data;
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'An error occurred';
-  } finally {
-    loading.value = false;
-  }
+	try {
+		loading.value = true;
+		const response = await fetch("/api/financial-report");
+		if (!response.ok) {
+			throw new Error("Failed to fetch financial data");
+		}
+		const data = await response.json();
+		reportData.value = data;
+	} catch (err) {
+		error.value = err instanceof Error ? err.message : "An error occurred";
+	} finally {
+		loading.value = false;
+	}
 };
 
 // Generate AI commentary
 const generateCommentary = async () => {
-  if (!aiPrompt.value.trim()) return;
-  
-  try {
-    aiLoading.value = true;
-    aiError.value = null;
-    
-    const response = await fetch('/api/generate-commentary', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-      },
-      body: JSON.stringify({
-        prompt: aiPrompt.value
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to generate commentary');
-    }
-    
-    const data = await response.json();
-    aiResponse.value = data.response || 'No response received';
-  } catch (err) {
-    aiError.value = err instanceof Error ? err.message : 'An error occurred';
-  } finally {
-    aiLoading.value = false;
-  }
+	if (!aiPrompt.value.trim()) return;
+
+	try {
+		aiLoading.value = true;
+		aiError.value = null;
+
+		const response = await fetch("/api/generate-commentary", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN":
+					document
+						.querySelector('meta[name="csrf-token"]')
+						?.getAttribute("content") || "",
+			},
+			body: JSON.stringify({
+				prompt: aiPrompt.value,
+			}),
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to generate commentary");
+		}
+
+		const data = await response.json();
+		aiResponse.value = data.response || "No response received";
+	} catch (err) {
+		aiError.value = err instanceof Error ? err.message : "An error occurred";
+	} finally {
+		aiLoading.value = false;
+	}
 };
 
 onMounted(() => {
-  fetchFinancialData();
+	fetchFinancialData();
 });
 </script>
 
@@ -109,11 +112,59 @@ onMounted(() => {
 
       <!-- Basic Report Display -->
       <div v-else-if="reportData" class="space-y-8">
-        
+
         <!-- Company Info -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">{{ reportData.company.name }}</h2>
-          <div class="text-sm text-gray-600">{{ reportData.company.report_type }}</div>
+          <div class="p-4">
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ reportData.company.name }}</h2>
+            <div class="text-sm text-gray-600">{{ reportData.company.report_type }}</div>
+            <div class="text-sm text-gray-600">Data up to <p class="font-bold inline-block">{{ reportData.company.actuals_to }}</p></div>
+          </div>
+          <table class="table-auto w-full text-sm p-1">
+            <thead>
+              <tr>
+                <th class="text-left p-1">Account</th>
+                <th v-for="column in reportData.columns" :key="column.month" class="text-right">{{ column.month }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="section in reportData.sections" v-bind:key="section.name">
+                <tr>
+                  <td class="font-bold text-gray-800 bg-gray-50 p-1" :colspan="reportData.columns.length + 1">{{ section.name }}</td>
+                </tr>
+                <template v-for="subsection in section.subsections" v-bind:key="subsection.name">
+                  <tr>
+                    <td class="pl-4 font-semibold text-gray-700 bg-gray-100 p-1" :colspan="reportData.columns.length + 1">{{ subsection.name }}</td>
+                  </tr>
+                  <template v-for="subsub in subsection.subsections || []" v-bind:key="subsub.name">
+                    <tr>
+                      <td class="pl-8 font-medium text-gray-600 bg-gray-50 p-1" :colspan="reportData.columns.length + 1">{{ subsub.name }}</td>
+                    </tr>
+                    <template v-for="item in subsub.line_items || []" v-bind:key="item.name">
+                      <tr>
+                        <td class="pl-12 p-1">{{ item.name }}</td>
+                        <td v-for="(value, idx) in item.values" :key="idx" class="text-right p-1" :class="{ 'text-red-600': value < 0 }">{{ value.toLocaleString() }}</td>
+                      </tr>
+                    </template>
+                  </template>
+                  <template v-for="item in subsection.line_items || []" v-bind:key="item.name">
+                    <tr>
+                      <td class="pl-8 p-1">{{ item.name }}</td>
+                      <td v-for="(value, idx) in item.values" :key="idx" class="text-right p-1" :class="{ 'text-red-600': value < 0 }">{{ value.toLocaleString() }}</td>
+                    </tr>
+                  </template>
+                </template>
+                <tr>
+                  <td class="font-bold text-gray-900 bg-blue-50 p-1">{{ section.total.name }}</td>
+                  <td v-for="(value, idx) in section.total.values" :key="idx" class="text-right font-bold p-1" :class="{ 'text-red-600': value < 0 }">{{ value.toLocaleString() }}</td>
+                </tr>
+              </template>
+              <tr v-for="summary in reportData.summary" :key="summary.name">
+                <td class="font-bold text-green-900 bg-green-50 p-1">{{ summary.name }}</td>
+                <td v-for="(value, idx) in summary.values" :key="idx" class="text-right font-bold p-1" :class="{ 'text-red-600': value < 0 }">{{ value.toLocaleString() }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- Challenge Instructions -->
