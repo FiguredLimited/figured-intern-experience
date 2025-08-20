@@ -134,23 +134,32 @@ onMounted(() => {
         <div class="border-b-4 border-blue-500 bg-white shadow-lg">
             <div class="mx-auto max-w-5xl px-6 py-6">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <Link href="/" class="mb-3 inline-flex items-center text-lg font-medium text-blue-600 hover:text-blue-800">
-                            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center space-x-6">
+                        <Link href="/" class="inline-flex items-center text-sm text-gray-600 transition-colors hover:text-gray-900">
+                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
                             Back to Home
                         </Link>
-                        <h1 class="text-3xl font-bold text-gray-900">📊 Easy Mode</h1>
-                        <p class="mt-1 text-xl text-gray-600">Simple Financial Overview</p>
+
+                        <div class="text-lg font-semibold text-gray-900">📊 Easy Mode</div>
                     </div>
 
-                    <Link
-                        href="/challenge"
-                        class="rounded-xl bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-blue-700"
-                    >
-                        🔬 Advanced Mode
-                    </Link>
+                    <div class="flex items-center space-x-3">
+                        <Link
+                            href="/challenge"
+                            class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+                            title="Switch to Advanced Mode for detailed analysis"
+                        >
+                            🔬 Advanced Mode
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Page Title Section -->
+                <div class="mt-6 text-center">
+                    <h1 class="text-3xl font-bold text-gray-900">Simple Financial Overview</h1>
+                    <p class="mt-2 text-xl text-gray-600">Easy-to-understand profit and loss summary</p>
                 </div>
             </div>
         </div>

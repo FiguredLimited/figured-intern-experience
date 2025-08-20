@@ -314,25 +314,34 @@ onUnmounted(() => {
         <div class="border-b border-gray-200 bg-white shadow-sm">
             <div class="mx-auto max-w-7xl px-4 py-4">
                 <div class="flex items-center justify-between">
-                    <Link href="/" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
-                        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                        Back to Home
-                    </Link>
+                    <div class="flex items-center space-x-6">
+                        <Link href="/" class="inline-flex items-center text-sm text-gray-600 transition-colors hover:text-gray-900">
+                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Back to Home
+                        </Link>
+
+                        <div class="text-lg font-semibold text-gray-900">🔬 Advanced Mode</div>
+                    </div>
 
                     <div class="flex items-center space-x-3">
+                        <!-- Mode Switch -->
                         <Link
                             href="/easy-mode"
-                            class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
-                            title="Switch to Easy Mode"
+                            class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-green-700"
+                            title="Switch to Easy Mode for simpler overview"
                         >
                             📊 Easy Mode
                         </Link>
 
+                        <!-- Divider -->
+                        <div class="h-6 w-px bg-gray-300"></div>
+
+                        <!-- Tools -->
                         <button
                             @click="showAICommentary = !showAICommentary"
-                            class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                            class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
                             title="AI Insights (Alt+A)"
                         >
                             🤖 AI Insights
@@ -342,11 +351,11 @@ onUnmounted(() => {
                         <div class="relative">
                             <button
                                 @click="showExportMenu = !showExportMenu"
-                                class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
+                                class="flex items-center rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-purple-700"
                                 title="Export Report (Alt+E)"
                                 :disabled="isExporting"
                             >
-                                {{ isExporting ? '⏳' : '📊' }} Export
+                                {{ isExporting ? '⏳' : '📤' }} Export
                             </button>
 
                             <!-- Export Dropdown -->
@@ -354,14 +363,14 @@ onUnmounted(() => {
                                 <div class="py-2">
                                     <button
                                         @click="exportAsCSV"
-                                        class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                        class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
                                         :disabled="isExporting"
                                     >
                                         📄 Export as CSV
                                     </button>
                                     <button
                                         @click="exportAsJSON"
-                                        class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                        class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
                                         :disabled="isExporting"
                                     >
                                         📋 Export as JSON
